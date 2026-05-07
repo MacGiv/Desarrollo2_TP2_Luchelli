@@ -32,11 +32,12 @@ public class BlockLogic : MonoBehaviour
 
         if (offset < 0.2f)
         {
+            TowerManager.Instance.RegisterPlacement(true);
             Debug.Log("Perfect placement!");
-
         }
         else if (offset < 0.5f)
         {
+            TowerManager.Instance.RegisterPlacement(false);
             Debug.Log("Good placement");
         }
         else
