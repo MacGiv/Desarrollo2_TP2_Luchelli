@@ -507,7 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2e1704cd99b7443a8db5e0c9f2653b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightPerBlock: 1
+  towerSettings: {fileID: 11400000, guid: 4477c4d409fa8e549b2dabfad755a8e7, type: 2}
   smoothSpeed: 4
 --- !u!1 &410087039
 GameObject:
@@ -979,7 +979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41019704bb30aac46963981cdf7bc19f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightPerBlock: 1
+  towerSettings: {fileID: 11400000, guid: 4477c4d409fa8e549b2dabfad755a8e7, type: 2}
 --- !u!1 &1247669837
 GameObject:
   m_ObjectHideFlags: 0
