@@ -57,10 +57,6 @@ public class TowerCameraController : MonoBehaviour
 
         float targetY = initialY + (height * towerSettings.heightPerBlock);
 
-        targetPosition = new Vector3(
-            transform.position.x,
-            targetY,
-            transform.position.z
-        );
+        targetPosition = new Vector3(transform.position.x, targetY, transform.position.z);
     }
 }
