@@ -1,19 +1,27 @@
+using UnityEditor.Rendering;
 using UnityEngine;
 
 /// <summary>
-/// Handles vertical camera tracking
+/// Handles smooth vertical camera tracking
 /// </summary>
 public class TowerCameraController : MonoBehaviour
 {
-    [Header("Follow Settings")]
-    [SerializeField] private float heightPerBlock = 1f;
+    [Header("References")]
+    [Tooltip("Shared tower settings")]
+    [SerializeField] private Data_Tower towerSettings;
+
+    [Header("Camera Settings")]
+    [Tooltip("Camera smoothing speed")]
     [SerializeField] private float smoothSpeed = 5f;
-    [SerializeField] private float yOffset = 0f;
 
     private Vector3 targetPosition;
 
+    private float initialY;
+
     private void Start()
     {
+        initialY = transform.position.y;
+
         targetPosition = transform.position;
     }
 
@@ -27,18 +35,32 @@ public class TowerCameraController : MonoBehaviour
         TowerManager.OnHeightChanged -= HandleHeightChanged;
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(
+            transform.position,
+            targetPosition,
+            smoothSpeed * Time.deltaTime
+        );
     }
 
     /// <summary>
-    /// Updates target camera height
+    /// Updates camera target position based on tower height
     /// </summary>
     private void HandleHeightChanged(int height)
     {
-        float targetY = (height * heightPerBlock) + yOffset;
+        if (towerSettings == null)
+        {
+            Debug.LogWarning("Missing TowerSettings reference");
+            return;
+        }
 
-        targetPosition = new Vector3(transform.position.x, targetY, transform.position.z);
+        float targetY = initialY + (height * towerSettings.heightPerBlock);
+
+        targetPosition = new Vector3(
+            transform.position.x,
+            targetY,
+            transform.position.z
+        );
     }
 }
