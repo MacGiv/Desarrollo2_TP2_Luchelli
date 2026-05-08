@@ -507,9 +507,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2e1704cd99b7443a8db5e0c9f2653b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightPerBlock: 0.25
-  smoothSpeed: 2
-  yOffset: 0
+  heightPerBlock: 1
+  smoothSpeed: 4
+  yOffset: -1.36
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
