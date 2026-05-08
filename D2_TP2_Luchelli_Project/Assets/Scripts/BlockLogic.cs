@@ -2,9 +2,20 @@ using UnityEngine;
 
 public class BlockLogic : MonoBehaviour
 {
+    [Header("Data")]
+    [SerializeField] private Data_Block blockData;
+
+    [Header("Cached Components")]
     [SerializeField] private Rigidbody rb;
-    
+
     private bool hasLanded = false;
+
+    private void Awake()
+    {
+        ApplyData();
+        if (rb == null)
+            rb = GetComponent<Rigidbody>();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -20,6 +31,29 @@ public class BlockLogic : MonoBehaviour
     }
 
     /// <summary>
+    /// Applies ScriptableObject configuration
+    /// </summary>
+    private void ApplyData()
+    {
+        if (blockData == null)
+        {
+            Debug.LogWarning("Missing BlockData");
+            return;
+        }
+
+        rb.mass = blockData.mass;
+        rb.linearDamping = blockData.drag;
+        rb.angularDamping = blockData.angularDrag;
+
+        Renderer renderer = GetComponent<Renderer>();
+
+        if (renderer != null && blockData.blockMaterial != null)
+        {
+            renderer.material = blockData.blockMaterial;
+        }
+    }
+
+    /// <summary>
     /// Evaluates how well the block was placed
     /// </summary>
     private void EvaluatePlacement(Collision collision)
@@ -30,12 +64,12 @@ public class BlockLogic : MonoBehaviour
 
         Debug.Log($"Offset: {offset}");
 
-        if (offset < 0.2f)
+        if (offset < blockData.perfectOffsetThreshold)
         {
             TowerManager.Instance.RegisterPlacement(true);
             Debug.Log("Perfect placement!");
         }
-        else if (offset < 0.5f)
+        else if (offset < blockData.goodOffsetThreshold)
         {
             TowerManager.Instance.RegisterPlacement(false);
             Debug.Log("Good placement");
