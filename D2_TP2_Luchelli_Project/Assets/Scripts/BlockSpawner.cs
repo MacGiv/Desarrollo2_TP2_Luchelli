@@ -52,7 +52,7 @@ public class BlockSpawner : MonoBehaviour
     /// </summary>
     private void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Time.timeScale > 0f && Input.GetKeyDown(KeyCode.Space))
         {
             SpawnBlock();
         }
