@@ -2,10 +2,8 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : MonoBehaviourSingleton<AudioManager>
 {
-    public static AudioManager Instance { get; private set; }
-
     [Header("Mixer")]
     [Tooltip("Main audio mixer")]
     [SerializeField] private AudioMixer audioMixer;
@@ -20,27 +18,14 @@ public class AudioManager : MonoBehaviour
     private const string SFX_PREF = "SFXVolumePref";
     private const string UI_PREF = "UIVolumePref";
 
-    private void Awake()
+    protected override void Awake()
     {
-        SetupSingleton();
-
-        LoadVolumes();
+        base.Awake();
     }
 
-    /// <summary>
-    /// Initializes singleton instance
-    /// </summary>
-    private void SetupSingleton()
+    private void Start()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-
-        DontDestroyOnLoad(gameObject);
+        LoadVolumes();
     }
 
     /// <summary>
@@ -80,12 +65,12 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     private void SetVolume(string parameter, string prefKey, float value)
     {
-        // Mathf.Log10(value) * 20f used to "normalize" decibel values to a slider range (0 to 1)
-        audioMixer.SetFloat(parameter, Mathf.Log10(value) * 20f);
-
+        // Mathf.Log10(value) * 20f used to "normalize" decibel values to a slider range (0 to 1) but sliders shouldn't
+        // get to 0 value because [Mathf.Log10(0) = -Infinity] and that leads to an AudioMixer's console error
+        float clampedValue = Mathf.Clamp(value, 0.0001f, 1f);
+        audioMixer.SetFloat(parameter, Mathf.Log10(clampedValue) * 20f);
         PlayerPrefs.SetFloat(prefKey, value);
-
-        PlayerPrefs.Save();
+        PlayerPrefs.Save(); ;
     }
 
     /// <summary>
