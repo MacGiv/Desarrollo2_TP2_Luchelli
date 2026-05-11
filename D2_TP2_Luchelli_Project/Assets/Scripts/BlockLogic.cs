@@ -8,6 +8,8 @@ public class BlockLogic : MonoBehaviour
     [Header("Cached Components")]
     [SerializeField] private Rigidbody rb;
 
+    private BoxCollider blockCollider;
+
     private bool hasLanded = false;
 
     private void Awake()
@@ -15,6 +17,8 @@ public class BlockLogic : MonoBehaviour
         ApplyData();
         if (rb == null)
             rb = GetComponent<Rigidbody>();
+        if(blockCollider == null)
+            blockCollider = GetComponent<BoxCollider>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -102,7 +106,8 @@ public class BlockLogic : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        Destroy(gameObject);
+        blockCollider.enabled = false;
+        Destroy(gameObject, 0.5f);
     }
 
 }
