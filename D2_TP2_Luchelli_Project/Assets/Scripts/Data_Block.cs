@@ -13,6 +13,8 @@ public class Data_Block : ScriptableObject
     public float perfectOffsetThreshold = 0.2f;
     public float goodOffsetThreshold = 0.5f;
 
-    [Header("Visual")]
+    [Header("Visual & Audio")]
     public Material blockMaterial;
+    public AudioClip impactSound;
+    public AudioClip perfectImpactSound;
 }
