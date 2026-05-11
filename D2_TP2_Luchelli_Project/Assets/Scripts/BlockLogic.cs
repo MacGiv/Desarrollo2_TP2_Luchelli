@@ -7,6 +7,7 @@ public class BlockLogic : MonoBehaviour
 
     [Header("Cached Components")]
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private AudioSource audioSource;
 
     private BoxCollider blockCollider;
 
@@ -19,6 +20,8 @@ public class BlockLogic : MonoBehaviour
             rb = GetComponent<Rigidbody>();
         if(blockCollider == null)
             blockCollider = GetComponent<BoxCollider>();
+        if (audioSource == null) 
+            audioSource = GetComponent<AudioSource>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -99,6 +102,17 @@ public class BlockLogic : MonoBehaviour
         rb.freezeRotation = true;
         rb.angularVelocity = Vector3.zero;
         rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    /// <summary>
+    /// Play sound on impact
+    /// </summary>
+    private void PlayImpactSound()
+    {
+        if (blockData != null && blockData.impactSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(blockData.impactSound);
+        }
     }
 
     /// <summary>
