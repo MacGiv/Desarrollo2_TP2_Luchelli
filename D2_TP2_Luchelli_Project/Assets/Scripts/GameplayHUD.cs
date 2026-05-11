@@ -1,27 +1,28 @@
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Handles gameplay UI updates via Observer pattern
+/// </summary>
 public class GameplayHUD : MonoBehaviour
 {
     [Header("HUD References")]
     [SerializeField] private TextMeshProUGUI scoreText;
-
     [SerializeField] private TextMeshProUGUI heightText;
-
-    [SerializeField] private TextMeshProUGUI strikeText;
+    [SerializeField] private TextMeshProUGUI streakText;
 
     private void OnEnable()
     {
         TowerManager.OnScoreChanged += UpdateScore;
         TowerManager.OnHeightChanged += UpdateHeight;
-        TowerManager.OnStrikeChanged += UpdateStrikes;
+        TowerManager.OnStreakChanged += UpdateStreak;
     }
 
     private void OnDisable()
     {
         TowerManager.OnScoreChanged -= UpdateScore;
         TowerManager.OnHeightChanged -= UpdateHeight;
-        TowerManager.OnStrikeChanged -= UpdateStrikes;
+        TowerManager.OnStreakChanged -= UpdateStreak;
     }
 
     /// <summary>
@@ -41,10 +42,10 @@ public class GameplayHUD : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates strikes UI
+    /// Updates streak UI
     /// </summary>
-    private void UpdateStrikes(int strikes)
+    private void UpdateStreak(int streak)
     {
-        strikeText.text = $"Strikes: {strikes}";
+        streakText.text = $"Streak: {streak}";
     }
 }

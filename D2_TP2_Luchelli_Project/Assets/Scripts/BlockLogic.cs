@@ -37,7 +37,7 @@ public class BlockLogic : MonoBehaviour
     {
         if (blockData == null)
         {
-            Debug.LogWarning("Missing BlockData");
+            Debug.LogWarning("[Block] Missing BlockData");
             return;
         }
 
@@ -62,21 +62,21 @@ public class BlockLogic : MonoBehaviour
 
         float offset = Mathf.Abs(transform.position.x - other.position.x);
 
-        Debug.Log($"Offset: {offset}");
+        Debug.Log($"[Block] Offset: {offset}");
 
         if (offset < blockData.perfectOffsetThreshold)
         {
             TowerManager.Instance.RegisterPlacement(true);
-            Debug.Log("Perfect placement!");
+            Debug.Log("[Block] Perfect placement!");
         }
         else if (offset < blockData.goodOffsetThreshold)
         {
             TowerManager.Instance.RegisterPlacement(false);
-            Debug.Log("Good placement");
+            Debug.Log("[Block] Good placement");
         }
         else
         {
-            Debug.Log("Miss!");
+            Debug.Log("[Block] Miss!");
             Die();
             return;
         }
@@ -89,7 +89,6 @@ public class BlockLogic : MonoBehaviour
     /// </summary>
     private void PlaceBlock(Collision collision)
     {
-        rb = GetComponent<Rigidbody>();
         //Set Block tag to Base's tag for next collisions
         gameObject.tag = collision.gameObject.tag;
         // Freeze Block's rotation and movement and set all constriants to true

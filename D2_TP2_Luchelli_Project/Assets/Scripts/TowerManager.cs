@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Handles tower progression and score
+/// Handles tower progression, score, and high score
 /// </summary>
 public class TowerManager : MonoBehaviour
 {
@@ -19,19 +19,35 @@ public class TowerManager : MonoBehaviour
     public static event Action<int> OnHeightChanged;
 
     /// <summary>
-    /// Triggered when strikes change
+    /// Triggered when the perfect placement streak changes
     /// </summary>
-    public static event Action<int> OnStrikeChanged;
+    public static event Action<int> OnStreakChanged;
 
-    [Header("Score")]
+    /// <summary>
+    /// Triggered when a new high score is reached
+    /// </summary>
+    public static event Action<int> OnHighScoreChanged;
+
+    [Header("Current Stats")]
+    [Tooltip("Current gameplay score")]
     [SerializeField] private int currentScore;
 
+    [Tooltip("Current tower height (blocks placed)")]
     [SerializeField] private int currentHeight;
 
-    [SerializeField] private int currentStrikes;
+    [Tooltip("Consecutive perfect placements")]
+    [SerializeField] private int currentStreak;
+
+    [Header("Persistence")]
+    [Tooltip("Highest score achieved across sessions")]
+    [SerializeField] private int highScore;
+
+    private const string HIGH_SCORE_PREF = "HighScorePref";
 
     private void Awake()
     {
+        // Scene-local singleton. We DO NOT use DontDestroyOnLoad here
+        // because we want the score to reset when reloading the Gameplay scene. :D
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -39,6 +55,9 @@ public class TowerManager : MonoBehaviour
         }
 
         Instance = this;
+
+        // Load High Score at start
+        highScore = PlayerPrefs.GetInt(HIGH_SCORE_PREF, 0);
     }
 
     /// <summary>
@@ -50,19 +69,37 @@ public class TowerManager : MonoBehaviour
 
         if (perfectPlacement)
         {
-            currentStrikes++;
+            currentStreak++;
             currentScore += 2;
         }
         else
         {
-            currentStrikes = 0;
+            currentStreak = 0;
             currentScore += 1;
+        }
+
+        // High Score evaluation
+        if (currentScore > highScore)
+        {
+            highScore = currentScore;
+            PlayerPrefs.SetInt(HIGH_SCORE_PREF, highScore);
+            PlayerPrefs.Save();
+
+            OnHighScoreChanged?.Invoke(highScore);
         }
 
         OnScoreChanged?.Invoke(currentScore);
         OnHeightChanged?.Invoke(currentHeight);
-        OnStrikeChanged?.Invoke(currentStrikes);
+        OnStreakChanged?.Invoke(currentStreak);
 
-        Debug.Log($"Score: {currentScore}");
+        Debug.Log($"[TowerManager] Score: {currentScore} | Streak: {currentStreak} | HighScore: {highScore}");
+    }
+
+    /// <summary>
+    /// Returns the saved high score. Useful for the Main Menu.
+    /// </summary>
+    public int GetHighScore()
+    {
+        return PlayerPrefs.GetInt(HIGH_SCORE_PREF, 0);
     }
 }

@@ -51,7 +51,7 @@ public class TowerCameraController : MonoBehaviour
     {
         if (towerSettings == null)
         {
-            Debug.LogWarning("Missing TowerSettings reference");
+            Debug.LogWarning("[TowerCameraController] Missing TowerSettings reference");
             return;
         }
 
