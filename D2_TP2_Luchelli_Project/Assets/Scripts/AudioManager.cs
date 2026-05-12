@@ -1,12 +1,22 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-
+/// <summary>
+/// Manages audio mixer volumes and persistent background music across scenes.
+/// </summary>
 public class AudioManager : MonoBehaviourSingleton<AudioManager>
 {
     [Header("Mixer")]
     [Tooltip("Main audio mixer")]
     [SerializeField] private AudioMixer audioMixer;
+
+    [Header("Background Music")]
+    [Tooltip("Audio source dedicated to playing background music")]
+    [SerializeField] private AudioSource bgmSource;
+    [Tooltip("Background music clip for the main menu")]
+    [SerializeField] private AudioClip menuMusic;
+    [Tooltip("Background music clip for the gameplay loop")]
+    [SerializeField] private AudioClip gameplayMusic;
 
     private const string MASTER_VOLUME = "MasterVolume";
     private const string MUSIC_VOLUME = "MusicVolume";
@@ -21,6 +31,12 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
     protected override void Awake()
     {
         base.Awake();
+
+        // Auto-assign AudioSource if we forgot to drag it in the inspector
+        if (bgmSource == null)
+        {
+            bgmSource = GetComponent<AudioSource>();
+        }
     }
 
     private void Start()
@@ -70,7 +86,7 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         float clampedValue = Mathf.Clamp(value, 0.0001f, 1f);
         audioMixer.SetFloat(parameter, Mathf.Log10(clampedValue) * 20f);
         PlayerPrefs.SetFloat(prefKey, value);
-        PlayerPrefs.Save(); ;
+        PlayerPrefs.Save();
     }
 
     /// <summary>
@@ -82,5 +98,35 @@ public class AudioManager : MonoBehaviourSingleton<AudioManager>
         SetMusicVolume(PlayerPrefs.GetFloat(MUSIC_PREF, 1f));
         SetSFXVolume(PlayerPrefs.GetFloat(SFX_PREF, 1f));
         SetUIVolume(PlayerPrefs.GetFloat(UI_PREF, 1f));
+    }
+
+    /// <summary>
+    /// Plays the main menu background music.
+    /// </summary>
+    public void PlayMenuMusic()
+    {
+        PlayMusic(menuMusic);
+    }
+
+    /// <summary>
+    /// Plays the gameplay background music.
+    /// </summary>
+    public void PlayGameplayMusic()
+    {
+        PlayMusic(gameplayMusic);
+    }
+
+    /// <summary>
+    /// Handles switching the background music seamlessly.
+    /// </summary>
+    private void PlayMusic(AudioClip clip)
+    {
+        if (clip == null || bgmSource == null) return;
+
+        // Prevent restarting the track if the exact same song is already playing
+        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
+
+        bgmSource.clip = clip;
+        bgmSource.Play();
     }
 }

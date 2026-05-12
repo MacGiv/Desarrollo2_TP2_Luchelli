@@ -70,6 +70,11 @@ public class TowerManager : MonoBehaviour
         highScore = PlayerPrefs.GetInt(HIGH_SCORE_PREF, 0);
     }
 
+    private void Start()
+    {
+        AudioManager.Instance.PlayGameplayMusic();
+    }
+
     /// <summary>
     /// Registers a successful placement
     /// </summary>

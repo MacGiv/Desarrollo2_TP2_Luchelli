@@ -36,6 +36,7 @@ public class MainMenuUI : MonoBehaviour
     private void Start()
     {
         UpdateHighScoreDisplay();
+        AudioManager.Instance.PlayMenuMusic();
     }
 
     /// <summary>
@@ -49,7 +50,6 @@ public class MainMenuUI : MonoBehaviour
             highScoreText.text = $"BEST SCORE: {high}";
         }
     }
-
 
     /// <summary>
     /// Navigation Logic 
