@@ -21,6 +21,14 @@ public class BlockSpawner : MonoBehaviour
 
     private Vector3 startPosition;
     private float direction = 1f;
+    private bool canSpawn = true;
+
+
+    private void OnEnable()
+    {
+        TowerManager.OnPlacementResolved += UnlockSpawning;
+        TowerManager.OnGameOver += LockSpawning;
+    }
 
     private void Start()
     {
@@ -31,6 +39,12 @@ public class BlockSpawner : MonoBehaviour
     {
         HandleMovement();
         HandleInput();
+    }
+
+    private void OnDisable()
+    {
+        TowerManager.OnPlacementResolved -= UnlockSpawning;
+        TowerManager.OnGameOver -= LockSpawning;
     }
 
     /// <summary>
@@ -52,9 +66,10 @@ public class BlockSpawner : MonoBehaviour
     /// </summary>
     private void HandleInput()
     {
-        if (Time.timeScale > 0f && Input.GetKeyDown(KeyCode.Space))
+        if (canSpawn && Time.timeScale > 0f && Input.GetKeyDown(KeyCode.Space))
         {
             SpawnBlock();
+            canSpawn = false; // Block spawn until collision resolved
         }
     }
 
@@ -71,4 +86,8 @@ public class BlockSpawner : MonoBehaviour
 
         Instantiate(blockPrefab, spawnPoint.position, Quaternion.identity);
     }
+
+    private void UnlockSpawning() => canSpawn = true;
+    private void LockSpawning() => canSpawn = false;
+
 }

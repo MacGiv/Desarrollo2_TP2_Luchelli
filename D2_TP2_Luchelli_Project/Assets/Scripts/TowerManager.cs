@@ -28,6 +28,16 @@ public class TowerManager : MonoBehaviour
     /// </summary>
     public static event Action<int> OnHighScoreChanged;
 
+    /// <summary>
+    /// Triggered when ends placement (normal/perfect/miss)
+    /// </summary>
+    public static event Action OnPlacementResolved;
+
+    /// <summary>
+    /// Triggered when you lose
+    /// </summary>
+    public static event Action OnGameOver;
+
     [Header("Current Stats")]
     [Tooltip("Current gameplay score")]
     [SerializeField] private int currentScore;
@@ -91,15 +101,30 @@ public class TowerManager : MonoBehaviour
         OnScoreChanged?.Invoke(currentScore);
         OnHeightChanged?.Invoke(currentHeight);
         OnStreakChanged?.Invoke(currentStreak);
+        OnPlacementResolved?.Invoke();
 
         Debug.Log($"[TowerManager] Score: {currentScore} | Streak: {currentStreak} | HighScore: {highScore}");
     }
 
     /// <summary>
-    /// Returns the saved high score. Useful for the Main Menu.
+    /// Registers when block missed the tower
+    /// </summary>
+    public void RegisterMiss()
+    {
+        Debug.Log("[TowerManager] ¡Missed! Game Over.");
+        OnGameOver?.Invoke();
+    }
+
+    /// <summary>
+    /// Returns the saved high score. 
     /// </summary>
     public int GetHighScore()
     {
         return PlayerPrefs.GetInt(HIGH_SCORE_PREF, 0);
     }
+
+    /// <summary>
+    /// Returns the current score
+    /// </summary>
+    public int GetCurrentScore() => currentScore;
 }

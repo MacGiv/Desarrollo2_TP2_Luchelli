@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BlockLogic : MonoBehaviour
@@ -8,6 +9,7 @@ public class BlockLogic : MonoBehaviour
     [Header("Cached Components")]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private float killZonePosOffset = -5f;
 
     private BoxCollider blockCollider;
 
@@ -22,6 +24,16 @@ public class BlockLogic : MonoBehaviour
             blockCollider = GetComponent<BoxCollider>();
         if (audioSource == null) 
             audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Update()
+    {
+        if (!hasLanded && transform.position.y < killZonePosOffset)
+        {
+            hasLanded = true; 
+            TowerManager.Instance.RegisterMiss();
+            Die();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -74,16 +86,18 @@ public class BlockLogic : MonoBehaviour
         if (offset < blockData.perfectOffsetThreshold)
         {
             TowerManager.Instance.RegisterPlacement(true);
+            PlaySound(blockData.perfectImpactSound);
             Debug.Log("[Block] Perfect placement!");
         }
         else if (offset < blockData.goodOffsetThreshold)
         {
             TowerManager.Instance.RegisterPlacement(false);
+            PlaySound(blockData.impactSound);
             Debug.Log("[Block] Good placement");
         }
         else
         {
-            Debug.Log("[Block] Miss!");
+            TowerManager.Instance.RegisterMiss();
             Die();
             return;
         }
@@ -105,13 +119,13 @@ public class BlockLogic : MonoBehaviour
     }
 
     /// <summary>
-    /// Play sound on impact
+    /// Plays a specific audio clip through the block's AudioSource
     /// </summary>
-    private void PlayImpactSound()
+    private void PlaySound(AudioClip clip)
     {
-        if (blockData != null && blockData.impactSound != null && audioSource != null)
+        if (blockData != null && clip != null && audioSource != null)
         {
-            audioSource.PlayOneShot(blockData.impactSound);
+            audioSource.PlayOneShot(clip);
         }
     }
 
@@ -120,6 +134,8 @@ public class BlockLogic : MonoBehaviour
     /// </summary>
     private void Die()
     {
+        Debug.Log("[Block] Miss!");
+        PlaySound(blockData.explodeSound);
         blockCollider.enabled = false;
         Destroy(gameObject, 0.5f);
     }
