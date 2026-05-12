@@ -17,4 +17,5 @@ public class Data_Block : ScriptableObject
     public Material blockMaterial;
     public AudioClip impactSound;
     public AudioClip perfectImpactSound;
+    public AudioClip explodeSound;
 }

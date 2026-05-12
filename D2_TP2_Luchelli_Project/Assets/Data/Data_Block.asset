@@ -18,3 +18,6 @@ MonoBehaviour:
   perfectOffsetThreshold: 0.2
   goodOffsetThreshold: 0.5
   blockMaterial: {fileID: 0}
+  impactSound: {fileID: 8300000, guid: 878f1230e7ada3f4a85c15cef998ba67, type: 3}
+  perfectImpactSound: {fileID: 8300000, guid: a468ea8542777b242b7cfc7ab5462175, type: 3}
+  explodeSound: {fileID: 8300000, guid: 9823cf34c8e2a1b49b8a4c56260b5b89, type: 3}
